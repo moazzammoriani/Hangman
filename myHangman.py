@@ -1,4 +1,4 @@
-import random, string
+import random, string, sys
 
 
 def load_words():
@@ -9,7 +9,7 @@ def load_words():
     take a while to finish.
     """
 
-    file = open("../words.txt", "r")
+    file = open("./words.txt", "r")
     wordlist = file.readline().split()
     return(wordlist)
 
@@ -74,160 +74,235 @@ def get_available_letters(letters_guessed):
     return(available_letters)
 
 
-print("\n \n \n \n \n \n \n \nWelcome to the game of Hangman! We will brutally hang a man until\n" 
-    + "you can guess the word I randomly thought of. Sounds exciting, right?\n \n"
-    + "A word has been randomly selected so you may begin your guessing!\n \n \n \n \n")
 
-#theWord = choose_word(load_words());
-theWord = "orange"
-wrongGuesses = 0;
-guessedLetters = [];
+def get_possible_matches(my_word, wordList):
+    '''
+    Takes in a word and lists all the possible available based on how many letters have already been guessed.
+    '''  
+    possibleMatches = []
+    formattedWord = my_word.split()
+    formattedWord = ''.join(formattedWord)
+    sameLengthWords = [i for i in wordList if len(i) == len(formattedWord)]
+    
 
-while wrongGuesses < 6 and not is_word_guessed(theWord, guessedLetters):
-    guess = ""
-    if wrongGuesses == 0:
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |") 
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        guess = guess.lower()
-        print("------------------------------------------------------------------- \n \n \n") 
-        
-        guessedLetters.append(guess)
+    for i in sameLengthWords:
 
-        
-    elif wrongGuesses == 1:
+        for j in range(len(formattedWord)):
             
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("    o         |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        print("------------------------------------------------------------------- \n \n \n")
+            if formattedWord[j] != i[j] and formattedWord[j] != "_":
+                break
 
-        
-        guess = guess.lower()
-
-        guessedLetters.append(guess)
-        
-
-    elif wrongGuesses == 2:
-        
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("    o         |")
-        print("    |         |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        print("------------------------------------------------------------------- \n \n \n")
-
-
-        guess = guess.lower()
-        guessedLetters.append(guess)
-        
-
-    elif wrongGuesses == 3:
-        
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("    o         |")
-        print("   /|         |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        print("------------------------------------------------------------------- \n \n \n")
-
-
-        guess = guess.lower()
-        guessedLetters.append(guess)
-        
-
-    elif wrongGuesses == 4:
-        
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("    o         |")
-        print("   /|\        |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        print("------------------------------------------------------------------- \n \n \n")
-
-
-        guess = guess.lower()
-        guessedLetters.append(guess)
-        
-
-    elif wrongGuesses == 5:
-        
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("    o         |")
-        print("   /|\        |")
-        print("   /          |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        print("------------------------------------------------------------------- \n \n \n")
-
-        
-        guess = guess.lower()
-        guessedLetters.append(guess)
-        
+            else:
+                
+                if j+1 == len(formattedWord):
+                    possibleMatches.append(i)
+                
+                else:
+                    pass
     
+    return(' '.join(possibleMatches))
+
+
+
+
+
+
+print("\n \n \n \n \n \n \n \nWelcome to the game of Hangman! We will brutally hang a man until\n" 
+    + "you can guess the word I randomly thought of. Sounds exciting, right?\n \n")
+
+while True:
+    print("A word has been randomly selected so you may begin your guessing!\n \n \n \n \n")
+
+    wordList = load_words()
+    theWord = choose_word(wordList);
+    wrongGuesses = 0;
+    guessedLetters = [];
+
+    while wrongGuesses < 6 and not is_word_guessed(theWord, guessedLetters):
+        guess = ""
+        if wrongGuesses == 0:
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |") 
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            guess = guess.lower()
+            print("Enter * to get a list of all the possible words our word could be")
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+            print("------------------------------------------------------------------- \n \n \n") 
+            
+            guessedLetters.append(guess)
+
+            
+        elif wrongGuesses == 1:
+                
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("    o         |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+            print("------------------------------------------------------------------- \n \n \n")
+
+            
+            guess = guess.lower()
+
+            guessedLetters.append(guess)
+            
+
+        elif wrongGuesses == 2:
+            
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("    o         |")
+            print("    |         |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+
+            print("------------------------------------------------------------------- \n \n \n")
+
+
+            guess = guess.lower()
+            guessedLetters.append(guess)
+            
+
+        elif wrongGuesses == 3:
+            
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("    o         |")
+            print("   /|         |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+
+            print("------------------------------------------------------------------- \n \n \n")
+
+
+            guess = guess.lower()
+            guessedLetters.append(guess)
+            
+
+        elif wrongGuesses == 4:
+            
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("    o         |")
+            print("   /|\        |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+            print("------------------------------------------------------------------- \n \n \n")
+
+
+            guess = guess.lower()
+            guessedLetters.append(guess)
+            
+
+        elif wrongGuesses == 5:
+            
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("    o         |")
+            print("   /|\        |")
+            print("   /          |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+            print("------------------------------------------------------------------- \n \n \n")
+
+            
+            guess = guess.lower()
+            guessedLetters.append(guess)
+            
+        
+        else:
+            
+            print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
+            print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
+            print("    o         |")
+            print("   /|\        |")
+            print("   / \        |")
+            print("              |")
+            print("              |")
+            print("              |")
+            print("              |")
+            guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
+            if guess == '*':
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                guess = input()
+            print("------------------------------------------------------------------- \n \n \n")
+
+            
+            guess = guess.lower()
+            guessedLetters.append(guess)
+        
+        if guess not in theWord or guess not in guessedLetters: 
+                wrongGuesses += 1
+
+    if is_word_guessed(theWord, guessedLetters):
+        print("Congratulations! You have delayed the stick figure's death until the next time someone loses.")
+
     else:
-        
-        print("    ___________", "           Your available letters are: ", get_available_letters(guessedLetters) + "\n")
-        print("    )         |", "           " + "Here's your progress so far: ", get_guessed_word(theWord, guessedLetters))
-        print("    o         |")
-        print("   /|\        |")
-        print("   / \        |")
-        print("              |")
-        print("              |")
-        print("              |")
-        print("              |")
-        guess = input("         ___________       Please guess a letter: \n \n \n")
-        print("------------------------------------------------------------------- \n \n \n")
+        print("Better luck next time! The word was", theWord +"\n \n \n")
 
-        
-        guess = guess.lower()
-        guessedLetters.append(guess)
-    
-    if guess not in theWord or guess not in guessedLetters: 
-            wrongGuesses += 1
 
-if is_word_guessed(theWord, guessedLetters):
-    print("Congratulations! You have delayed the stick figure's death until the next time someone loses.")
+    retryAnswer = input("Press r to retry and e to exit ")
 
-else:
-    print("Better luck next time! The word was", theWord)
+    if retryAnswer != 'r' and retryAnswer != 'e':
+        retryAnswer = input("Press r to retry and e to exit ")
 
-print("\n \n \n \n \n \n")
+    elif retryAnswer == 'e':
+        sys.exit()
 
-   
+    else:
+        pass
+
+
+
+    print("\n \n \n \n \n \n")
+
+
+
 
 
 
