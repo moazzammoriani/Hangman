@@ -75,7 +75,7 @@ def get_available_letters(letters_guessed):
 
 
 
-def get_possible_matches(my_word, wordList):
+def get_possible_matches(my_word, wordList, guessed_letters):
     '''
     Takes in a word and lists all the possible available based on how many letters have already been guessed.
     '''  
@@ -83,13 +83,19 @@ def get_possible_matches(my_word, wordList):
     formattedWord = my_word.split()
     formattedWord = ''.join(formattedWord)
     sameLengthWords = [i for i in wordList if len(i) == len(formattedWord)]
+    guessed_letters = guessed_letters[:]
+    for i in formattedWord:
+        if i in guessed_letters:
+            guessed_letters.remove(i)
+
+
     
 
     for i in sameLengthWords:
 
         for j in range(len(formattedWord)):
             
-            if formattedWord[j] != i[j] and formattedWord[j] != "_":
+            if (formattedWord[j] != i[j] and formattedWord[j] != "_") or i[j] in guessed_letters:
                 break
 
             else:
@@ -114,7 +120,8 @@ while True:
     print("A word has been randomly selected so you may begin your guessing!\n \n \n \n \n")
 
     wordList = load_words()
-    theWord = choose_word(wordList);
+    #theWord = choose_word(wordList);
+    theWord = "shop"
     wrongGuesses = 0;
     guessedLetters = [];
 
@@ -134,7 +141,7 @@ while True:
             guess = guess.lower()
             print("Enter * to get a list of all the possible words our word could be")
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
             print("------------------------------------------------------------------- \n \n \n") 
             
@@ -155,7 +162,7 @@ while True:
             guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
             
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
             print("------------------------------------------------------------------- \n \n \n")
 
@@ -178,7 +185,7 @@ while True:
             print("              |")
             guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
 
             print("------------------------------------------------------------------- \n \n \n")
@@ -201,7 +208,7 @@ while True:
             print("              |")
             guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
 
             print("------------------------------------------------------------------- \n \n \n")
@@ -224,7 +231,7 @@ while True:
             print("              |")
             guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
             print("------------------------------------------------------------------- \n \n \n")
 
@@ -246,7 +253,7 @@ while True:
             print("              |")
             guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
             print("------------------------------------------------------------------- \n \n \n")
 
@@ -268,7 +275,7 @@ while True:
             print("              |")
             guess = input("         ___________       Please guess a letter(Press * for hints): \n \n \n")
             if guess == '*':
-                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList))
+                print("Your possibilities are: " + get_possible_matches(get_guessed_word(theWord, guessedLetters), wordList, guessedLetters))
                 guess = input()
             print("------------------------------------------------------------------- \n \n \n")
 
